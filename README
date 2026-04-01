@@ -1,0 +1,194 @@
+# Inventory Database & API
+
+## 📌 Overview
+
+This project implements a backend system for managing supplier inventory. Suppliers can list surplus stock, and the system allows storing, validating, and retrieving inventory data efficiently.
+
+---
+
+## 🗄️ Database Schema
+
+### 1. Suppliers Collection
+
+* `id` (MongoDB ObjectId)
+* `name` (String)
+* `city` (String)
+
+### 2. Inventory Collection
+
+* `id` (MongoDB ObjectId)
+* `supplier_id` (Reference to Supplier)
+* `product_name` (String)
+* `quantity` (Number)
+* `price` (Number)
+
+### 🔗 Relationship
+
+* One supplier → many inventory items
+* Implemented using `supplier_id` reference in the Inventory collection
+
+---
+
+## 🚀 APIs
+
+### 1. Create Supplier
+
+**POST /supplier**
+
+```json id="a1b2c3"
+{
+  "name": "ABC Supplier",
+  "city": "Nagpur"
+}
+```
+
+---
+
+### 2. Create Inventory
+
+**POST /inventory**
+
+```json id="d4e5f6"
+{
+  "supplier_id": "SUPPLIER_ID",
+  "product_name": "Shirt",
+  "quantity": 10,
+  "price": 500
+}
+```
+
+### ✅ Validation Rules
+
+* Inventory must belong to a valid supplier
+* Quantity ≥ 0
+* Price > 0
+
+---
+
+### 3. Get Inventory (Grouped & Sorted)
+
+**GET /inventory**
+
+#### 🔍 Description:
+
+* Groups inventory by supplier
+* Calculates total inventory value:
+
+  ```
+  totalValue = quantity × price
+  ```
+* Sorts suppliers by total value (descending)
+
+#### 📦 Sample Response:
+
+```json id="g7h8i9"
+[
+  {
+    "_id": "supplier_id",
+    "supplierName": "ABC Supplier",
+    "totalValue": 5000,
+    "items": [
+      {
+        "product_name": "Shirt",
+        "quantity": 10,
+        "price": 500
+      }
+    ]
+  }
+]
+```
+
+---
+
+## ⚙️ Tech Stack
+
+* Node.js
+* Express.js
+* MongoDB (Mongoose)
+* dotenv (for environment variables)
+
+---
+
+## 🧠 Why MongoDB (NoSQL)?
+
+* Flexible schema for inventory data
+* Easy handling of relationships using references
+* Powerful aggregation pipeline for grouping and calculations
+* Faster development compared to relational setup for this use case
+
+---
+
+## ⚡ Optimization Suggestion
+
+For large-scale applications:
+
+* Add indexes on:
+
+  * `supplier_id`
+  * `product_name`
+* Use aggregation pipelines efficiently
+* Implement pagination for large datasets
+* Cache frequent queries (e.g., Redis)
+
+---
+
+## ▶️ How to Run
+
+### 1. Setup Environment
+
+Create a `.env` file:
+
+```env id="j1k2l3"
+MONGO_URI=mongodb://127.0.0.1:27017/inventoryDB
+PORT=5000
+```
+
+---
+
+### 2. Install Dependencies
+
+```bash id="m4n5o6"
+npm install
+```
+
+---
+
+### 3. Start Server
+
+```bash id="p7q8r9"
+npm run dev
+```
+
+---
+
+## 📁 Project Structure
+
+```bash id="s1t2u3"
+src/
+  config/
+    db.js
+  models/
+    Supplier.js
+    Inventory.js
+  controllers/
+    supplierController.js
+    inventoryController.js
+  routes/
+    supplierRoutes.js
+    inventoryRoutes.js
+server.js
+```
+
+---
+
+## ✅ Conclusion
+
+This project demonstrates:
+
+* Proper database schema design
+* Relationship handling in MongoDB
+* API validation and error handling
+* Use of aggregation pipeline for complex queries
+* Clean and optimized API responses
+
+---
